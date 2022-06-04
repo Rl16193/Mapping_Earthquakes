@@ -1,20 +1,31 @@
-// latitudes + longitudes for Airports
-
-let lineMap = [ 
-    [37.615223, -122.389977],
-    [30.1944444444, -97.67],
-    [ 43.691,-79.6255],
-    [40.641766, -73.780968]
-];
+// Add GeoJSON data.
+let sanFranAirport =
+{"type":"FeatureCollection","features":[{
+    "type":"Feature",
+    "properties":{
+        "id":"3469",
+        "name":"San Francisco International Airport",
+        "city":"San Francisco",
+        "country":"United States",
+        "faa":"SFO",
+        "icao":"KSFO",
+        "alt":"13",
+        "tz-offset":"-8",
+        "dst":"A",
+        "tz":"America/Los_Angeles"},
+        "geometry":{
+            "type":"Point",
+            "coordinates":[-122.375,37.61899948120117]}}
+]};
 
 // Create the map object with center at the San Francisco airport.
-let map = L.map('mapid').setView([37.6213, -122.3790], 7);
+let map = L.map('mapid').setView([37.5, -122.5], 10);
 
 // We create the tile layer that will be the background of our map.
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/streets-v11',
+    id: 'mapbox/navigation-night-v1',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: API_KEY
@@ -23,9 +34,9 @@ let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{
 streets.addTo(map);
 
 
-// Plot Multiple Lines
-L.polyline(lineMap, {
-    color: "blue",
-    dashArray: "20,20",
-    weight: "2",
+// Plot GEOJSON point
+L.geoJSON(sanFranAirport, {
+    onEachFeature: function(feature, layer){
+        layer.bindPopup("<h2>" + feature.properties.faa + "</h2> <hr><h4> Airport Name: " + feature.properties.name + "</hr> <hr> City: " + feature.properties.city +"</hr></h4>")
+    }
 }).addTo(map);
